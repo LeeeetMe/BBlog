@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登陆</title>
+    <link rel="stylesheet" href="/static/bootstrap-3.3.7-dist/css/bootstrap.css">
+
+</head>
+<style>
+    .login{
+        margin: 0 auto;
+        margin-top: 100px;
+        width: 600px;
+    }
+    .auth_img{
+        width: 120px;
+        height: 30px;
+    }
+    .logo_img{
+        width: 60px;
+        height: 60px;
+    }
+</style>
+<body>
+<nav class="navbar navbar-default" style="background-color:#d9edf7">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-btn" href="/">
+        <img src="/static/imgs/logo.jpg" class="logo_img" >
+      </a>
+    </div>
+  </div>
+</nav>
+
+<div class="login">
+
+    <h3>用户登陆：
+        <hr/>
+    </h3>
+    <form class="form-horizontal" method="post" action="/Blog/login.html" novalidate>
+        {% csrf_token %}
+        <div class="form-group">
+            <label class="col-sm-2 control-label">用户名</label>
+            <div class="col-sm-8">
+                {{form_obj.username}}{{form_obj.errors.username.0}}
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">密码</label>
+            <div class="col-sm-8">
+                {{form_obj.password}} {{form_obj.errors.password.0}}
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">验证码</label>
+            <div class="col-sm-4">
+                {{form_obj.auth_code}} {{form_obj.errors.auth_code.0}}
+            </div>
+            <div class="col-sm-4">
+                <img class="auth_img" onclick="upload_code(this)" src="/Blog/auth_code" alt="验证图片">
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-4">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox"> Remember me
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-default">登陆</button>
+            </div>
+        </div>
+    </form>
+</div>
+</body>
+<script>
+    function upload_code(self) {
+        self.src = self.src+"?"
+    }
+</script>
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ blog.title }}</title>
+    <link rel="stylesheet" href="/static/bootstrap-3.3.7-dist/css/bootstrap.css">
+    <!--<link rel="stylesheet" href="/css/main.css">-->
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/article_list/article_list.css">
+
+</head>
+
+
+<body>
+<nav class="navbar navbar-default no-radius">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/Blog/{{blog.site}}.html">{{ blog.title }}</a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li><a>{{ blog.}}</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/">主页</a></li>
+                {% if is_login %}
+                    <li><a href="/Blog/{{user.site}}-set.html">设置</a></li>
+                    <li><a href="/Blog/logout.html">注销</a></li>
+                    <li><a href="/Blog/{{blog.site}}/create-article.html">添加文章</a></li>
+                {% else %}
+                    <li><a href="/Blog/login.html">登陆</a></li>
+                    <li><a href="/Blog/register.html">注册</a></li>
+                {% endif %}
+                <!--<li><a href="/Blog/logout.html">注销</a></li>-->
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container -->
+</nav>
+<div class="container-fluid">
+    <div class="col-md-3">
+        <!--{% include 'head.html'%}-->
+       <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">文章分类</h3>
+            </div>
+            <div class="panel-body">
+                <ul>
+                    {% for item in category_list %}
+                    <li><a href="/Blog/{{blog.site}}/category/{{item.category_id}}">{{item.category__title}}({{item.count}})</a></li>
+                    {% endfor%}
+                </ul>
+            </div>
+            <div class="panel-heading">
+                <h3 class="panel-title">标签</h3>
+            </div>
+            <div class="panel-body">
+                <ul>
+                    {% for item in tag_list %}
+                    <li><a href="/Blog/{{blog.site}}/tags/{{item.tags_id}}">{{item.tags__title}}({{item.count}})</a></li>
+                    {% endfor%}
+                </ul>
+            </div>
+            <div class="panel-heading">
+                <h3 class="panel-title">文章列表</h3>
+            </div>
+            <div class="panel-body">
+                <ul>
+                    {% for item in time_list %}
+                    <li><a href="/Blog/{{blog.site}}/date/{{item.cTime}}">{{item.cTime}}({{item.count}})</a></li>
+                    {% endfor%}
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-8">
+
+        <ul class="post-list">
+            {% for item in article_list %}
+            <li class="post-item">
+                <!--<a class="readmore" href="/Blog/{{ blog.site }}/article/{{ item.nid }}.html"></a>-->
+                <div class="item-header">
+                    <p>{{ item.title }}</p>
+                    <span><i class="glyphicon glyphicon-calendar"></i> {{ item.create_time }}</span>
+                </div>
+                <div class="item-content">
+                    <p class="excerpt">
+                        {{ item.summary }}
+                    </p>
+                </div>
+                <div>
+                        <div class="post-item-footer">
+                            <span onclick="updown({{item.nid}},1)">
+                                <i class="glyphicon glyphicon-thumbs-up">
+                                </i> ({{ item.up_count }})
+                            </span>
+                            <span>
+                                <a href="#">评论</a>({{ item.comment_count }})
+                                <a href="/Blog/{{ blog.site }}/article/{{ item.nid }}.html">阅读</a>({{ item.read_count }})
+                            </span>
+                        </div>
+                    </div>
+
+            </li>
+            {%endfor%}
+        </ul>
+    </div>
+</div>
+</body>
+<script src="/static/jquery-3.2.1.js"></script>
+<script>
+    function updown(nid,val) {
+        console.log(nid,val);
+        $.ajax({
+            url:'/Blog/article-updown',
+            data:{'val':val,'nid':nid,'csrfmiddlewaretoken':'{{csrf_token}}'},
+            type:'POST',
+            dataType:'JSON',
+            success:function (arg) {
+                console.log(arg)
+            }
+        })
+    }
+</script>
+</html>

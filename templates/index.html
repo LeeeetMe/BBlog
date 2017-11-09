@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+    <link rel="stylesheet" href="/static/bootstrap-3.3.7-dist/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/article_list/article_list.css">
+
+</head>
+<style>
+    .no-radius {
+        border-radius: 0;
+
+    !important;
+    }
+    .article-list .article-item .article-body img{
+        width: 70px;
+        height: 70px;
+    }
+    .left{
+        float: left;
+    }
+    .my-active,
+    .my-active:hover,
+    .my-active:focus {
+        /*z-index: 2;*/
+        /*color: #fff;*/
+        /*background-color: #2fb788;*/
+        /*border-color: #2fb788;*/
+            /*!important;*/
+
+        border-left: 1px solid #458B74;
+        border-bottom: 1px solid #458B74;
+        color: #458B74;
+    }
+</style>
+<body>
+<nav class="navbar navbar-default no-radius">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/">斗转星移,万物乾坤</a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                {% if is_login %}
+                    <li><a href="/Blog/{{blog.site}}.html">{{userInfo.nickname}}</a></li>
+                    <li><a href="/Blog/logout.html">注销</a></li>
+                    <li><a href="/Blog/{{blog.site}}/create-article.html">添加文章</a></li>
+                {% else %}
+                    <li><a href="/Blog/login.html">登陆</a></li>
+                    <li><a href="/Blog/register.html">注册</a></li>
+                {% endif %}
+
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container -->
+</nav>
+<div class="container">
+
+    <div>
+        <div class="col-lg-8">
+
+        <ul class="post-list">
+            {% for item in article_list %}
+            <li class="post-item">
+                <!--<a class="readmore" href="/Blog/{{ blog.site }}/article/{{ item.nid }}.html"></a>-->
+                <div class="item-header">
+                    <p>{{ item.title }}</p>
+                    <span><i class="glyphicon glyphicon-calendar"></i> {{ item.create_time }}</span>
+                </div>
+                <div class="item-content">
+                    <p class="excerpt">
+                        {{ item.summary }}
+                    </p>
+                </div>
+                <div>
+                        <div class="post-item-footer">
+                            <span onclick="updown({{ item.nid }},1)">
+                                <i class="glyphicon glyphicon-thumbs-up">
+                                </i> ({{ item.up_count }})
+                            </span>
+                            <span>
+                                <a href="/Blog/{{ item.blog.site }}.html">{{ item.blog.title }}</a>
+                                <a href="#">评论</a>({{ item.comment_count }})
+                                <a href="/Blog/{{ item.blog.site }}/article/{{ item.nid }}.html">阅读</a>({{ item.read_count }})
+                            </span>
+                        </div>
+                    </div>
+            </li>
+            {%endfor%}
+        </ul>
+    </div>
+        <div class="col-lg-4">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">文章分类</h3>
+                </div>
+                <div class="panel-body">
+                    <ul class="nav nav-pills nav-stacked">
+                        {% if kwargs.category_id == 0 %}
+                            <li><a class="my-active" href="/Blog/mulit_select/0-{{kwargs.tags__nid}}">全部</a></li>
+                        {% else %}
+                            <li><a href="/Blog/mulit_select/0-{{kwargs.tags__nid}}">全部</a></li>
+                        {% endif %}
+                        {% for item in category_list %}
+                            {%if kwargs.category_id == item.category_id %}
+                                <li class="my-active"><a href="/Blog/mulit_select/{{item.category_id}}-{{kwargs.tags__nid}}">{{item.category__title}}({{item.count}})</a></li>
+                            {%else%}
+                                <li><a href="/Blog/mulit_select/{{item.category_id}}-{{kwargs.tags__nid}}">{{item.category__title}}({{item.count}})</a></li>
+                            {%endif%}
+                        {% endfor%}
+                    </ul>
+                </div>
+            </div>
+
+
+            <div class="panel panel-primary">
+
+                <div class="panel-heading">
+                    <h3 class="panel-title">标签</h3>
+                </div>
+                <div class="panel-body">
+                    <ul  class="nav nav-pills nav-stacked">
+                        {% if kwargs.tags__nid == 0 %}
+                            <li><a class="my-active" href="/Blog/mulit_select/{{kwargs.category_id}}-0">全部</a></li>
+                        {% else %}
+                            <li><a href="/Blog/mulit_select/{{kwargs.category_id}}-0">全部</a></li>
+                        {% endif %}
+
+                        {% for item in tag_list %}
+                            {%if kwargs.tags__nid == item.tags_id%}
+                                <li class="my-active"><a href="/Blog/mulit_select/{{kwargs.category_id}}-{{item.tags_id}}">{{item.tags__title}}({{item.count}})</a></li>
+                            {%else%}
+                                <li><a href="/Blog/mulit_select/{{kwargs.category_id}}-{{item.tags_id}}">{{item.tags__title}}({{item.count}})</a></li>
+                            {%endif%}
+                        {% endfor%}
+                    </ul>
+                </div>
+            </div>
+                <!--<div class="panel-heading">-->
+                    <!--<h3 class="panel-title">文章列表</h3>-->
+                <!--</div>-->
+                <!--<div class="panel-body">-->
+                    <!--<ul>-->
+                        <!--{% for item in time_list %}-->
+                            <!--<li><a href="#">{{item.cTime}}({{item.count}})</a></li>-->
+                        <!--{% endfor%}-->
+                    <!--</ul>-->
+                <!--</div>-->
+
+        </div>
+    </div>
+</div>
+</body>
+<script src="/static/jquery-3.2.1.js"></script>
+<script>
+    function updown(nid,val) {
+        console.log(nid,val);
+        $.ajax({
+            url:'/Blog/article-updown',
+            data:{'val':val,'nid':nid,'csrfmiddlewaretoken':'{{csrf_token}}'},
+            type:'POST',
+            dataType:'JSON',
+            success:function (arg) {
+                console.log(arg)
+                if(arg.status==1){
+                    // 赞
+                    alert('赞')
+                }
+                else if(arg.status==0){
+                    // 不赞也不踩
+                }
+                else if(arg.status==-1){
+                    // 踩
+                }
+                else if(arg.status==2){
+                    // 出现异常
+                    alert(arg.msg)
+                }
+                else{
+                    // 没有登录
+                    location.href="{% url 'login' %}"
+                }
+            }
+        })
+    }
+</script>
+</html>

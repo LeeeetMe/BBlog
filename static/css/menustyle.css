@@ -1,0 +1,88 @@
+/*The CSS example*/
+.accordion {
+  width: 500px;
+  border-radius: 5px;
+  overflow: hidden;
+  margin: auto;
+}
+
+.accordion .item .heading {
+  height: 50px;
+  line-height: 50px;
+  font-size: 17px;
+  cursor: pointer;
+  color: #fff;
+  padding-left: 15px;
+  background-position: right 20px top -95px;
+  border-bottom: 1px solid #ec8484;
+  box-sizing: border-box;
+}
+
+.accordion .item .heading .fa-chevron-circle-down{
+  float: right;
+  padding: 15px;
+}
+
+.accordion .item.open .heading,
+.accordion .item:last-child .heading {
+  border: 0;
+}
+
+.accordion .item.open .heading {
+  background-position: right 20px top -5px;
+}
+
+.accordion .item .content {
+  padding: 0px 20px;
+  background: #eee;
+  font-size: 14px;
+  height:0;
+  overflow:hidden;
+  color: #7f8c8d;
+  -webkit-transition: all 0.3s ease-in-out;
+  -moz-transition: all 0.3s ease-in-out;
+  -ms-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+}
+
+.accordion .item.open .content {
+  height: 100px;
+  padding: 20px;
+}
+
+.orange{
+  background-color: #FBB44C;
+}
+
+.pink{
+  background-color: #FC797A;
+}
+
+.green{
+  background-color:#2ABB9B;
+}
+
+.blue{
+  background-color: #3498db;  
+}
+
+/*End CSS example*/
+
+/*Other CSS*/
+body{
+  font-family: helvetica;
+  font-size: 1.5em;
+}
+
+.center{
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  position:relative;
+  width: 40%;
+}
+
+.container{ 
+   margin-top: 50px; 
+}
+

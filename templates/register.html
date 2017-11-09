@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>注册</title>
+    <link rel="stylesheet" href="/static/bootstrap-3.3.7-dist/css/bootstrap.css">
+
+</head>
+<style>
+    .login {
+        margin: 0 auto;
+        margin-top: 100px;
+        width: 600px;
+    }
+
+    .register_img {
+        width: 80px;
+        height: 80px;
+    }
+
+    .absolute {
+        position: absolute;
+        width: 100px;
+        height: 100px;
+
+    }
+
+    .relative {
+        position: relative;
+        height: 100px;
+        margin: 20px 0;
+    }
+
+    #form-portrait{
+        display: none;
+    }
+</style>
+<body>
+<div class="login">
+    <h3>用户注册：</h3>
+    <img src="/static/imgs/Br.png">
+
+    <form id="form_register" class="form-horizontal" method="post" action="/Blog/register.html" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+        <div class="relative col-sm-12">
+            <div class="col-md-2">
+                <label class="col-lg-12">头像</label>
+            </div>
+            <div class="col-sm-5">
+                <img id="head_img" class="register_img absolute" src="/static/imgs/Gakki.jpeg">
+                <input id="select_img" type="file" class="register_img absolute" style="opacity: 0" title="点击上传头像">
+                {{ form_obj.portrait }}
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">用户名</label>
+            <div class="col-sm-8">
+                {{form_obj.username}}<p>{{form_obj.errors.username.0}}
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">昵称</label>
+            <div class="col-sm-8">
+                {{form_obj.nickname}}<p>{{form_obj.errors.nickname.0}}</p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">密码</label>
+            <div class="col-sm-8">
+                {{form_obj.password_1}}<p>{{form_obj.errors.password_1.0}}</p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">确认密码</label>
+            <div class="col-sm-8">
+                {{form_obj.password_2}}<p>{{form_obj.errors.password_2.0}}
+                <p>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">邮箱</label>
+            <div class="col-sm-8">
+                {{form_obj.user_email}}<p>{{form_obj.errors.user_email.0}}
+                <p>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">验证码</label>
+            <div class="col-sm-4">
+                {{form_obj.auth_code}} <p>{{form_obj.errors.auth_code.0}}</p>
+            </div>
+            <div class="col-sm-4">
+                <img class="auth_img" onclick="upload_code(this)" src="/Blog/auth_code/" alt="验证图片">
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-default">注册</button>
+            </div>
+        </div>
+    </form>
+</div>
+</body>
+
+<script src="/static/jquery-3.2.1.js"></script>
+<script>
+    $(function () {
+        if(window.URL.createObjectURL){
+//            bindAvatar_Render()
+            bindAvatar_Ajax()
+        }
+        else if(window.FileReader){
+//            bindAvatar_URL()
+            bindAvatar_Ajax()
+        }
+        else {
+            bindAvatar_Ajax()
+        }
+    })
+
+    function upload_code(self) {
+        self.src = self.src + "?"
+    }
+
+    function bindAvatar_Ajax() {
+
+        document.getElementById('select_img').onchange = function () {
+            var avatar_obj=document.getElementById('select_img').files[0];
+            if(avatar_obj){
+                var new_xhr = getXHL();
+                var formData = new FormData();
+                var csrf_val = document.getElementsByName('csrfmiddlewaretoken')[0].value;
+                formData.append('Avatar', avatar_obj);
+                new_xhr.onreadystatechange = function () {
+                    if (new_xhr.readyState == 4) {
+                        var file_path = '/'+new_xhr.responseText;  <!--静态加载网页的时候前面都是有个'/' -->
+                        var Myimg = document.getElementById('head_img');  <!-- 获取图片标签 -->
+                        $("#form-portrait").val(new_xhr.responseText);
+                        Myimg.src = file_path; <!-- 设置src -->
+                    }
+                }
+                new_xhr.open('POST', '/Blog/temp_avatar.html');
+                <!-- setRequestHeader 必须在open之后send之前调用 -->
+                new_xhr.setRequestHeader("X-CSRFToken",csrf_val);
+                new_xhr.send(formData);
+            }
+        }
+    }
+    function bindAvatar_URL() {
+        // 本地预览，需要手动释放内存
+    }
+    function bindAvatar_Render() {
+        //
+    }
+    function getXHL() {
+            var xhr = null;
+            if (XMLHttpRequest) {
+                xhr = new XMLHttpRequest();
+            } else {
+                xhr = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            return xhr;
+        }
+
+</script>
+</html>
