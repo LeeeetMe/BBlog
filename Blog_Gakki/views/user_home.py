@@ -46,14 +46,14 @@ def get_tags(blog):
     return tag_list
 
 def get_timeArticle(blog):
-    Tarticle_list = models.Article.objects.filter(blog=blog).extra(select={
+    article_list = models.Article.objects.filter(blog=blog).extra(select={
         'cTime':'date_format(create_time,"%%Y-%%m")'}).values('cTime').annotate(count=Count('nid'))
-    return Tarticle_list
+    return article_list
 
 def home(request,*args,**kwargs):
     use_site = kwargs.get('site')
     blog = models.Blog.objects.filter(site=use_site).first()
-    article_list = models.Article.objects.filter(blog=blog).all()
+    article_list = models.Article.objects.filter(blog=blog).order_by("create_time")
     for item in article_list:
         # print(item.create_time,type(item.create_time))
         item.create_time = item.create_time.strftime("%Y-%m-%d %H:%M:%S")

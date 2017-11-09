@@ -28,6 +28,7 @@ def get_category(blog=None):
     # print(blog.query)
     # 通过博主信息获取category，因为单独获取会造成多次数据库操作而影响效率，所以通过annotate()进行分组一次获取
     category_list = models.Article.objects.values('category_id','category__title').annotate(count=Count('category__title'))
+    print('ar-------------------------------')
     print(category_list.query)
     print(category_list)
 
@@ -89,7 +90,7 @@ def Index(request,*args,**kwargs):
     condition ={}
     if type_id:
         condition['article_type_id'] = type_id
-    article_list = models.Article.objects.filter(**condition)
+    article_list = models.Article.objects.filter(**condition).order_by("create_time")
     chioces_list = models.Article.type_choices
 
     category_list = get_category()
